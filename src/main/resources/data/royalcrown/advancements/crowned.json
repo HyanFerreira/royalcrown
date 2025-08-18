@@ -1,0 +1,14 @@
+{
+  "parent": "royalcrown:accepted",
+  "display": {
+    "icon": { "item": "royalcrown:crown" },
+    "title": { "translate": "adv.royalcrown.crowned.title" },
+    "description": { "translate": "adv.royalcrown.crowned.desc" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "internal": { "trigger": "minecraft:impossible" }
+  }
+}

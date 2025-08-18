@@ -63,15 +63,15 @@ public class RCConfig {
 
             TRIAL_REQUIRED_CITIZENS = b
                     .comment("Cidadãos mínimos na colônia para conquistar a coroa.")
-                    .defineInRange("trial.requiredCitizens", 4, 1, 500);
+                    .defineInRange("trial.requiredCitizens", 15, 1, 500);
 
             TRIAL_DEFENSES_REQUIRED = b
                     .comment("Quantas defesas completas são necessárias.")
-                    .defineInRange("trial.defensesRequired", 2, 1, 100);
+                    .defineInRange("trial.defensesRequired", 5, 1, 100);
 
             TRIAL_WAVE_KILLS = b
                     .comment("Kills de mobs HOSTIS perto da colônia que contam como 1 defesa.")
-                    .defineInRange("trial.waveKills", 2, 1, 100);
+                    .defineInRange("trial.waveKills", 5, 1, 100);
 
             TRIAL_WAVE_TIMEOUT_TICKS = b
                     .comment("Tempo (ticks) para emendar kills num mesmo 'ataque' (padrão ~2 min = 2400).")

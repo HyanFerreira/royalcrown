@@ -35,7 +35,7 @@ public class AdvisorScreen extends Screen {
     private static final int BOX_H = 160;
 
     // cores
-    private static final int SCRIM = 0x90000000;
+    private static final int SCRIM = 0x00000000;
     private static final int PANEL = 0xAA000000;
 
     // assets

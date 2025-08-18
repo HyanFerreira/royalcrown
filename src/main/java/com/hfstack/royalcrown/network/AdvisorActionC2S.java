@@ -1,6 +1,7 @@
 package com.hfstack.royalcrown.network;
 
 import com.hfstack.royalcrown.ModRegistry;
+import com.hfstack.royalcrown.RCAdvancements;
 import com.hfstack.royalcrown.RoyalProgressData;
 import com.hfstack.royalcrown.RoyalTrials;
 import net.minecraft.network.FriendlyByteBuf;
@@ -53,6 +54,8 @@ public class AdvisorActionC2S {
         switch (msg.action) {
             case ACCEPT -> {
                 sp.getPersistentData().putBoolean("RC_Accepted", true);
+                RCAdvancements.grant(sp, RCAdvancements.ACCEPTED);
+
                 // feedback curto (agora via lang)
                 sp.sendSystemMessage(Component.translatable("msg.royalcrown.advisor.accepted"));
             }
@@ -70,6 +73,7 @@ public class AdvisorActionC2S {
                 if (citizens >= reqCit && defDone >= reqDef && (!unique || !data.isCrownGiven())) {
                     // dá a coroa + festa
                     RoyalTrials.giveCrownIfMissing(sp);
+                    RCAdvancements.grant(sp, RCAdvancements.CROWNED);
                     if (unique) data.giveCrownTo(sp.getUUID());
                     RoyalTrials.celebrate(sl, sp);
                     sp.getPersistentData().putBoolean("RC_Crowned", true);

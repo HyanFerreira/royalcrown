@@ -122,7 +122,7 @@ public class RoyalTrials {
 
         int reqCit = RCConfig.COMMON.TRIAL_REQUIRED_CITIZENS.get();
         int reqDef = RCConfig.COMMON.TRIAL_DEFENSES_REQUIRED.get();
-        int citizens = countCitizensAround(sl, p, RCConfig.COMMON.TRIAL_NEAR_RADIUS.get());
+        int citizens = getColonyCitizenCount(sl, p);
         int defDone = RoyalProgressData.get(sl).getDefenses(p.getUUID());
 
         if (citizens >= reqCit && defDone >= reqDef) {
@@ -130,7 +130,6 @@ public class RoyalTrials {
             p.sendSystemMessage(Component.translatable("msg.royalcrown.ready"));
         }
     }
-
 
     /**
      * Mata mob hostil perto da colônia -> conta para defesa (em “ondas”).
@@ -175,7 +174,7 @@ public class RoyalTrials {
 
             int nowDone = data.getDefenses(p.getUUID());
             int reqCit = RCConfig.COMMON.TRIAL_REQUIRED_CITIZENS.get();
-            int citizens = countCitizensAround(sl, p, RCConfig.COMMON.TRIAL_NEAR_RADIUS.get());
+            int citizens = getColonyCitizenCount(sl, p);
 
             if (nowDone >= reqDef) {
                 // Já terminou as defesas — verifica se JÁ tem população suficiente.
@@ -325,7 +324,7 @@ public class RoyalTrials {
         }
 
         // já aceitou
-        int citizens = RoyalTrials.countCitizensAround(sl, p, RCConfig.COMMON.TRIAL_NEAR_RADIUS.get());
+        int citizens = getColonyCitizenCount(sl, p);
         int defDone = RoyalProgressData.get(sl).getDefenses(p.getUUID());
         boolean canCrown = (citizens >= reqCit && defDone >= reqDef);
 
@@ -401,4 +400,132 @@ public class RoyalTrials {
 
         sl.addFreshEntity(adv);
     }
+
+    // ======== POPULAÇÃO EXATA DA COLÔNIA (via reflexão) ========
+
+    private static final int FALLBACK_POP_RADIUS = 200;
+
+    public static int getColonyCitizenCount(ServerLevel sl, Player p) {
+        // Tenta via API do MineColonies
+        try {
+            Object colonyManager = getColonyManagerInstance();
+            if (colonyManager != null) {
+                Object colony = invokeBestColonyLookup(colonyManager, sl, p.blockPosition());
+                if (colony != null) {
+                    // 1) métodos diretos que retornam int
+                    Integer direct = tryGetInt(colony,
+                            new String[]{"getCitizenCount", "getPopulation", "getPopulationSize", "getNumberOfCitizens"});
+                    if (direct != null) return direct;
+
+                    // 2) getCitizens() -> Collection
+                    Object coll = invokeFirstCompatible(colony,
+                            new String[]{"getCitizens", "getCitizenList"}, new Object[]{});
+                    if (coll instanceof java.util.Collection<?> c) return c.size();
+
+                    // 3) via citizen manager
+                    Object cm = invokeFirstCompatible(colony,
+                            new String[]{"getCitizenManager", "getCitizenDataManager", "getColonyCitizenManager"}, new Object[]{});
+                    if (cm != null) {
+                        Integer viaMgr = tryGetInt(cm,
+                                new String[]{"getCurrentCitizenCount", "getTotalCitizenCount", "getCitizenCount",
+                                        "getPopulation", "getPopulationSize"});
+                        if (viaMgr != null) return viaMgr;
+
+                        Object coll2 = invokeFirstCompatible(cm,
+                                new String[]{"getCitizens", "getCitizenList"}, new Object[]{});
+                        if (coll2 instanceof java.util.Collection<?> c2) return c2.size();
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+
+        // Fallback: conta entidades de cidadão num raio
+        return countCitizensAround(sl, p, FALLBACK_POP_RADIUS);
+    }
+
+    private static Integer tryGetInt(Object target, String[] methodNames) {
+        for (String n : methodNames) {
+            try {
+                var m = target.getClass().getMethod(n);
+                Object v = m.invoke(target);
+                if (v instanceof Number num) return num.intValue();
+            } catch (Throwable ignored) {
+            }
+        }
+        return null;
+    }
+
+    private static Object getColonyManagerInstance() {
+        String[] candidates = {
+                "com.minecolonies.api.colony.management.ColonyManager",
+                "com.minecolonies.api.colony.ColonyManager"
+        };
+        for (String cn : candidates) {
+            try {
+                Class<?> clazz = Class.forName(cn);
+                var m = clazz.getMethod("getInstance");
+                Object inst = m.invoke(null);
+                if (inst != null) return inst;
+            } catch (Throwable ignored) {
+            }
+        }
+        return null;
+    }
+
+    private static Object invokeBestColonyLookup(Object colonyManager, ServerLevel sl, BlockPos pos) {
+        String[] names = {"getColonyByPos", "getClosestColony", "getColonyByPosition", "getNearestColony", "getColony"};
+        Object[][] argSets = new Object[][]{{sl, pos}, {pos, sl}, {pos}, {sl}};
+        for (String n : names) {
+            for (Object[] args : argSets) {
+                Object out = tryInvoke(colonyManager, n, args);
+                if (out != null) return out;
+            }
+        }
+        return null;
+    }
+
+    private static Object invokeFirstCompatible(Object target, String[] names, Object[] args) {
+        for (String n : names) {
+            Object out = tryInvoke(target, n, args);
+            if (out != null) return out;
+        }
+        return null;
+    }
+
+    private static Object tryInvoke(Object target, String name, Object[] args) {
+        for (var m : target.getClass().getMethods()) {
+            if (!m.getName().equals(name)) continue;
+            if (m.getParameterCount() != args.length) continue;
+            var pts = m.getParameterTypes();
+            boolean ok = true;
+            for (int i = 0; i < pts.length; i++) {
+                Object a = args[i];
+                if (a != null && !wrap(pts[i]).isAssignableFrom(a.getClass())) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (!ok) continue;
+            try {
+                return m.invoke(target, args);
+            } catch (Throwable ignored) {
+            }
+        }
+        return null;
+    }
+
+    private static Class<?> wrap(Class<?> c) {
+        if (!c.isPrimitive()) return c;
+        if (c == int.class) return Integer.class;
+        if (c == boolean.class) return Boolean.class;
+        if (c == long.class) return Long.class;
+        if (c == double.class) return Double.class;
+        if (c == float.class) return Float.class;
+        if (c == byte.class) return Byte.class;
+        if (c == short.class) return Short.class;
+        if (c == char.class) return Character.class;
+        return c;
+    }
+
 }

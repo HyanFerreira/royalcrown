@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 public class RoyalAdvisorRenderer extends MobRenderer<RoyalAdvisorEntity, VillagerModel<RoyalAdvisorEntity>> {
 
     // Use a textura vanilla de aldeão, ou troque para a sua:
-    private static final ResourceLocation TEX =
-            new ResourceLocation("minecraft", "textures/entity/villager/villager.png");
+    // private static final ResourceLocation TEX =
+    //         new ResourceLocation("minecraft", "textures/entity/villager/villager.png");
 
     // Para textura própria:
-    // private static final ResourceLocation TEX =
-    //         new ResourceLocation(ModMain.MODID, "textures/entity/royal_advisor.png");
+    private static final ResourceLocation TEX =
+            new ResourceLocation(ModMain.MODID, "textures/entity/royal_advisor.png");
 
     public RoyalAdvisorRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new VillagerModel<>(ctx.bakeLayer(ModelLayers.VILLAGER)), 0.5f);

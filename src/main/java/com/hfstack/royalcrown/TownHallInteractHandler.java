@@ -3,6 +3,7 @@ package com.hfstack.royalcrown;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,8 +19,8 @@ import java.util.*;
 public final class TownHallInteractHandler {
 
     private static final boolean USE_DELAY = true;        // true = agenda; false = spawn imediato
-    private static final int ADVISOR_DELAY_TICKS = 300;   // tempo até o spawn (ex.: 300 = 15s)
-    private static final int NOTIFY_DELAY_TICKS = 100;   // atraso da mensagem = 5s
+    private static final int ADVISOR_DELAY_TICKS = 300;   // tempo até o spawn (ex.: 300 = 15s) | 1200 para ~10min
+    private static final int NOTIFY_DELAY_TICKS = 300;   // atraso da mensagem = 15s
 
     // cooldown antigo da msg de nível — deixei, mas não usamos mais.
     private static final Map<UUID, Integer> LVL_MSG_CD = new HashMap<>();
@@ -75,6 +76,11 @@ public final class TownHallInteractHandler {
             // agenda também a NOTIFICAÇÃO para 5s depois do clique
             data.schedule(sl, pos.above(), due, sl.dimension(), e.getEntity().getUUID(), NOTIFY_DELAY_TICKS);
             // (mensagem não é enviada aqui — ela sai no tick após 5s)
+
+            // depois de data.schedule(...) OU do spawn imediato
+            if (e.getEntity() instanceof ServerPlayer sp2) {
+                RCAdvancements.grant(sp2, RCAdvancements.ROOT);
+            }
         }
     }
 

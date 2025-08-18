@@ -1,0 +1,14 @@
+{
+  "display": {
+    "icon": { "item": "minecolonies:blockhuttownhall" },
+    "title": { "translate": "adv.royalcrown.root.title" },
+    "description": { "translate": "adv.royalcrown.root.desc" },
+    "background": "domum_ornamentum:textures/block/brick/brown_bricks.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "internal": { "trigger": "minecraft:impossible" }
+  }
+}

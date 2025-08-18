@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -87,14 +87,20 @@ public class AdvisorSpawnData extends SavedData {
 
         // 1) Mensagem de pré-chegada (atrasada)
         if (!notified && now >= notifyDue) {
-            Player target = null;
+            ServerPlayer target = null;
             try {
-                if (!notifyPlayer.isEmpty()) target = sl.getPlayerByUUID(UUID.fromString(notifyPlayer));
+                if (!notifyPlayer.isEmpty()) {
+                    target = (ServerPlayer) sl.getPlayerByUUID(UUID.fromString(notifyPlayer));
+                }
             } catch (IllegalArgumentException ignored) {
             }
-            if (target == null && !sl.players().isEmpty()) {
-                target = sl.players().get(0);
+
+            // fallback: qualquer jogador online
+            if (target == null) {
+                var list = sl.players(); // List<ServerPlayer>
+                if (!list.isEmpty()) target = list.get(0);
             }
+
             if (target != null) {
                 target.sendSystemMessage(Component.translatable("msg.royalcrown.advisor.prearrival"));
             }
@@ -106,13 +112,26 @@ public class AdvisorSpawnData extends SavedData {
         if (now >= due) {
             RoyalTrials.ensureAdvisorNearTownHall(sl, pos);
 
-            // AVISO DE CHEGADA (para jogadores num raio de 64 blocos)
+            // Aviso + conquista para jogadores próximos
             double x = pos.getX() + 0.5, y = pos.getY() + 0.5, z = pos.getZ() + 0.5;
             double r2 = 64 * 64;
-            for (Player p : sl.players()) {
-                if (p.distanceToSqr(x, y, z) <= r2) {
-                    p.sendSystemMessage(Component.translatable("msg.royalcrown.advisor.arrived"));
+
+            for (ServerPlayer pl : sl.players()) { // <- já é ServerPlayer
+                if (pl.distanceToSqr(x, y, z) <= r2) {
+                    pl.sendSystemMessage(Component.translatable("msg.royalcrown.advisor.arrived"));
+                    RCAdvancements.grant(pl, RCAdvancements.ADVISOR);
                 }
+            }
+
+            // Concede também ao jogador que iniciou (mesmo se estiver longe)
+            try {
+                if (!notifyPlayer.isEmpty()) {
+                    ServerPlayer starter = (ServerPlayer) sl.getPlayerByUUID(UUID.fromString(notifyPlayer));
+                    if (starter != null) {
+                        RCAdvancements.grant(starter, RCAdvancements.ADVISOR);
+                    }
+                }
+            } catch (IllegalArgumentException ignored) {
             }
 
             setSpawned();

@@ -1,0 +1,14 @@
+{
+  "parent": "royalcrown:advisor_spawn",
+  "display": {
+    "icon": { "item": "minecraft:paper" },
+    "title": { "translate": "adv.royalcrown.accepted.title" },
+    "description": { "translate": "adv.royalcrown.accepted.desc" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "internal": { "trigger": "minecraft:impossible" }
+  }
+}

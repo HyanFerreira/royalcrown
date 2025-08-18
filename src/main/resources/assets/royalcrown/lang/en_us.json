@@ -42,5 +42,17 @@
 
   "cmd.royalcrown.advisor.where.th": "§bAdvisor: §fLook around the Town Hall at §e(%s, %s, %s)§f.",
   "cmd.royalcrown.advisor.where.not_found": "§bAdvisor: §fI couldn't find him nearby. He usually stays close to the Town Hall.",
-  "cmd.royalcrown.advisor.where.here": "§bAdvisor: §fI'm here: §e(%s, %s, %s)§f!"
+  "cmd.royalcrown.advisor.where.here": "§bAdvisor: §fI'm here: §e(%s, %s, %s)§f!",
+
+  "adv.royalcrown.root.title": "A New Empire? Perhaps...",
+  "adv.royalcrown.root.desc": "Reach level 1 with your colony's Town Hall",
+
+  "adv.royalcrown.advisor.title": "An Advisor and a Future King",
+  "adv.royalcrown.advisor.desc": "Welcome the Royal Advisor to your colony",
+
+  "adv.royalcrown.accepted.title": "Prove Your Worth",
+  "adv.royalcrown.accepted.desc": "Accept the trials and prepare to claim the crown",
+
+  "adv.royalcrown.crowned.title": "Long Live the King",
+  "adv.royalcrown.crowned.desc": "Claim the Crown and become the King"
 }

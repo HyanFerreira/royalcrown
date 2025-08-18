@@ -1,0 +1,14 @@
+{
+  "parent": "royalcrown:root",
+  "display": {
+    "icon": { "item": "minecraft:bell" },
+    "title": { "translate": "adv.royalcrown.advisor.title" },
+    "description": { "translate": "adv.royalcrown.advisor.desc" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "internal": { "trigger": "minecraft:impossible" }
+  }
+}

@@ -42,6 +42,18 @@
 
   "cmd.royalcrown.advisor.where.th": "§bConselheiro: §fProcure nas redondezas da Prefeitura em §e(%s, %s, %s)§f.",
   "cmd.royalcrown.advisor.where.not_found": "§bConselheiro: §fNão o encontrei por perto. Ele costuma ficar próximo da Prefeitura.",
-  "cmd.royalcrown.advisor.where.here": "§bConselheiro: §fEstou aqui: §e(%s, %s, %s)§f!"
+  "cmd.royalcrown.advisor.where.here": "§bConselheiro: §fEstou aqui: §e(%s, %s, %s)§f!",
+
+  "adv.royalcrown.root.title": "Um novo Império? Talvez...",
+  "adv.royalcrown.root.desc": "Alcance o nível 1 com a Prefeitura de sua Colônia",
+
+  "adv.royalcrown.advisor.title": "Um Conselheiro e um Futuro Rei",
+  "adv.royalcrown.advisor.desc": "Receba o Conselheiro Real em sua Colônia",
+
+  "adv.royalcrown.accepted.title": "Prove seu Valor",
+  "adv.royalcrown.accepted.desc": "Aceite as provas e prepare-se para conquistar a coroa",
+
+  "adv.royalcrown.crowned.title": "Vida Longa ao Rei",
+  "adv.royalcrown.crowned.desc": "Reivindique a Coroa e torne-se o Rei"
 }
 
