@@ -1,0 +1,50 @@
+modLoader = "javafml"
+license = "MIT"
+loaderVersion = "[47,)"  # Forge 1.20.1 = 47.x
+
+# (opcional) seus links reais ou remova
+# issueTrackerURL = "https://seu.link/issue-tracker"
+# updateJSONURL = "https://seu.link/update.json"
+# displayURL = "https://seu.link/homepage"
+
+[[mods]]
+modId = "royalcrown"
+version = "${mod_version}"
+displayName = "Royal Crown - MineColonies"
+authors = "Hyan Ferreira"
+description = '''
+Uma coroa que te dá status de Rei: guardas não revidam e te protegem como lobos.
+'''
+
+# Requer Forge 47.x
+[[dependencies.royalcrown]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+# Requer exatamente Minecraft 1.20.1
+[[dependencies.royalcrown]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${mc_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+# --- Se você FOR usar a lib 'flib' (porque manteve ConfigTemplate), deixe esta dependência:
+# (e lembre de colocar o jar do flib na pasta mods ao rodar)
+# [[dependencies.royalcrown]]
+# modId = "flib"
+# mandatory = true
+# versionRange = "[0,)"
+# ordering = "NONE"
+# side = "BOTH"
+
+# MineColonies é opcional em runtime (mas recomendado). Range amplo para não travar.
+[[dependencies.royalcrown]]
+modId = "minecolonies"
+mandatory = false
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "BOTH"

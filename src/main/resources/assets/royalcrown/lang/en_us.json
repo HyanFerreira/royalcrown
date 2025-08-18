@@ -1,0 +1,46 @@
+{
+  "item.royalcrown.crown": "Royal Crown",
+
+  "screen.royalcrown.advisor.title": "Advisor",
+  "screen.royalcrown.advisor.tooltip.close": "Close",
+
+  "button.royalcrown.advisor.intro1": "Pleasure to meet you",
+  "button.royalcrown.advisor.intro2": "Then declare me King",
+  "button.royalcrown.advisor.intro3": "Tell me what to do",
+  "button.royalcrown.advisor.intro4": "Absolutely!",
+  "button.royalcrown.advisor.status": "Got it",
+  "button.royalcrown.advisor.claim1": "Continue",
+  "button.royalcrown.advisor.claim2": "Become King",
+  "button.royalcrown.advisor.farewell1": "Continue",
+  "button.royalcrown.advisor.farewell2": "Farewell, my Advisor",
+  "button.royalcrown.advisor.farewell3": "I will await your news",
+
+  "screen.royalcrown.advisor.intro1.text": "Hello, brave warrior. I am the Royal Advisor of the Colony.",
+  "screen.royalcrown.advisor.intro2.text": "I heard about this new colony, and I also heard that you are the chief around here. Well, even if you are the chief, you are not yet a King.",
+  "screen.royalcrown.advisor.intro3.text": "Ho ho, ho! My friend, let's take it easy. Though becoming King is the dream of many, few are worthy of bearing this Noble Title! Will you be able to prove yourself?",
+  "screen.royalcrown.advisor.intro4.text": "To be crowned, you must:\n• Have at least %s citizens in the colony;\n• Complete %s defenses near the colony.\n\nSo then, do you think you can prove your worth to this colony?",
+  "screen.royalcrown.advisor.status.text": "You have not yet proven your worth; come back after completing the objectives!\n\nProgress:\n• Citizens: %s/%s\n• Defenses: %s/%s",
+  "screen.royalcrown.advisor.claim1.text": "Impressive! You have proven yourself worthy enough to lead your people as a true King.",
+  "screen.royalcrown.advisor.claim2.text": "Therefore, as the Royal Advisor, I hereby declare you King!",
+  "screen.royalcrown.advisor.farewell1.text": "Very well, my work here is done for now, Your Majesty!",
+  "screen.royalcrown.advisor.farewell2.text": "I shall return soon and, by then, I hope this colony is much more than a colony— a Kingdom! An Empire! Until then, Your Majesty!",
+  "screen.royalcrown.advisor.farewell3.text": "Hey, this is not a goodbye, Your Majesty—just a see you soon.",
+  "screen.royalcrown.advisor.tooltip.skip": "Skip to accept",
+
+  "msg.royalcrown.advisor.accepted": "§bAdvisor: §fVery well! Prove your worth and speak to me again.",
+  "msg.royalcrown.advisor.farewell.departed": "The Advisor has departed on an open-ended journey, but will keep in touch.",
+  "msg.royalcrown.advisor.prearrival": "An Advisor has heard rumors of a new Colony; he will arrive shortly.",
+  "msg.royalcrown.advisor.arrived": "The Advisor has arrived! Look for him around the Town Hall.",
+  "msg.royalcrown.status": "§eProgress — Citizens: %s/%s | Defenses: %s/%s",
+  "msg.royalcrown.ready": "§6Trials complete! Speak with the §bRoyal Advisor§6 near the Town Hall to claim the Crown.",
+  "msg.royalcrown.defense_done_both": "§aDefense complete! (%s/%s)  §7Citizens: %s/%s",
+  "msg.royalcrown.defense_done": "§aDefense complete! (%s/%s)",
+  "msg.royalcrown.defense_progress": "§7Defense progress: %s/%s",
+  "msg.royalcrown.crowned_toast": "§6You have claimed the Royal Crown!",
+
+  "entity.royalcrown.royal_advisor": "§bRoyal Advisor",
+
+  "cmd.royalcrown.advisor.where.th": "§bAdvisor: §fLook around the Town Hall at §e(%s, %s, %s)§f.",
+  "cmd.royalcrown.advisor.where.not_found": "§bAdvisor: §fI couldn't find him nearby. He usually stays close to the Town Hall.",
+  "cmd.royalcrown.advisor.where.here": "§bAdvisor: §fI'm here: §e(%s, %s, %s)§f!"
+}
