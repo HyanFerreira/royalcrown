@@ -83,6 +83,16 @@ public class RoyalProgressData extends SavedData {
         setDirty();
     }
 
+    public void setDefenses(UUID player, int count) {
+        defensesDone.put(player, Math.max(0, count));
+        setDirty();
+    }
+
+    public void resetPlayer(UUID player) {
+        defensesDone.remove(player);
+        setDirty();
+    }
+
     public boolean isCrownGiven() {
         return crownGiven;
     }

@@ -1,8 +1,7 @@
 package com.hfstack.royalcrown.network;
 
-import com.hfstack.royalcrown.ModRegistry;
 import com.hfstack.royalcrown.RCAdvancements;
-import com.hfstack.royalcrown.RoyalProgressData;
+import com.hfstack.royalcrown.CoronationCeremony;
 import com.hfstack.royalcrown.RoyalTrials;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -61,22 +60,10 @@ public class AdvisorActionC2S {
             }
             case CLAIM_CROWN -> {
                 // Recheca requisitos (evita race)
-                int reqCit = com.hfstack.royalcrown.RCConfig.COMMON.TRIAL_REQUIRED_CITIZENS.get();
-                int reqDef = com.hfstack.royalcrown.RCConfig.COMMON.TRIAL_DEFENSES_REQUIRED.get();
-                int citizens = com.hfstack.royalcrown.RoyalTrials.countCitizensAround(sl, sp,
-                        com.hfstack.royalcrown.RCConfig.COMMON.TRIAL_NEAR_RADIUS.get());
-                int defDone = com.hfstack.royalcrown.RoyalProgressData.get(sl).getDefenses(sp.getUUID());
-
-                var data = RoyalProgressData.get(sl);
-                boolean unique = com.hfstack.royalcrown.RCConfig.COMMON.UNIQUE_PER_WORLD.get();
-
-                if (citizens >= reqCit && defDone >= reqDef && (!unique || !data.isCrownGiven())) {
-                    // dá a coroa + festa
-                    RoyalTrials.giveCrownIfMissing(sp);
-                    RCAdvancements.grant(sp, RCAdvancements.CROWNED);
-                    if (unique) data.giveCrownTo(sp.getUUID());
-                    RoyalTrials.celebrate(sl, sp);
-                    sp.getPersistentData().putBoolean("RC_Crowned", true);
+                if (RoyalTrials.canClaimCrown(sl, sp)) {
+                    CoronationCeremony.start(sl, sp, msg.advisorEntityId);
+                } else {
+                    sp.sendSystemMessage(Component.translatable("msg.royalcrown.coronation.not_ready"));
                 }
             }
             case FAREWELL_DONE -> {

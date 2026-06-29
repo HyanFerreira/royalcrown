@@ -261,6 +261,29 @@ public class RoyalTrials {
         }
     }
 
+    public static boolean canClaimCrown(ServerLevel sl, Player p) {
+        int reqCit = RCConfig.COMMON.TRIAL_REQUIRED_CITIZENS.get();
+        int reqDef = RCConfig.COMMON.TRIAL_DEFENSES_REQUIRED.get();
+        int citizens = getColonyCitizenCount(sl, p);
+        int defDone = RoyalProgressData.get(sl).getDefenses(p.getUUID());
+        boolean unique = RCConfig.COMMON.UNIQUE_PER_WORLD.get();
+        return citizens >= reqCit && defDone >= reqDef && (!unique || !RoyalProgressData.get(sl).isCrownGiven());
+    }
+
+    public static boolean completeCoronation(ServerLevel sl, ServerPlayer sp) {
+        if (!canClaimCrown(sl, sp)) return false;
+
+        RoyalProgressData data = RoyalProgressData.get(sl);
+        boolean unique = RCConfig.COMMON.UNIQUE_PER_WORLD.get();
+
+        giveCrownIfMissing(sp);
+        RCAdvancements.grant(sp, RCAdvancements.CROWNED);
+        if (unique) data.giveCrownTo(sp.getUUID());
+        celebrate(sl, sp);
+        sp.getPersistentData().putBoolean("RC_Crowned", true);
+        return true;
+    }
+
     public static void celebrate(ServerLevel sl, Player p) {
         // Mensagem persistente no chat
         p.sendSystemMessage(Component.translatable("msg.royalcrown.crowned_toast"));
