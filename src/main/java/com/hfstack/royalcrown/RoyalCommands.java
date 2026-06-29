@@ -15,6 +15,11 @@ public class RoyalCommands {
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent e) {
         e.getDispatcher().register(Commands.literal("royalcrown")
+                .then(Commands.literal("help").executes(ctx -> {
+                    ServerPlayer p = ctx.getSource().getPlayerOrException();
+                    sendHelp(p);
+                    return 1;
+                }))
                 .then(Commands.literal("status").executes(ctx -> {
                     ServerPlayer p = ctx.getSource().getPlayerOrException();
                     sendStatus(p);
@@ -98,6 +103,19 @@ public class RoyalCommands {
                             return 1;
                         }))
                 ));
+    }
+
+    private static void sendHelp(ServerPlayer p) {
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.header"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.status"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.advisor_where"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_accept"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_complete_defenses"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_start_coronation"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_reset_player"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_clear_crown"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_give_crown"));
+        p.sendSystemMessage(Component.translatable("cmd.royalcrown.help.debug_respawn_advisor"));
     }
 
     private static void sendStatus(ServerPlayer p) {

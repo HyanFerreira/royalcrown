@@ -83,6 +83,7 @@ Goal: make the existing crown journey more reliable before adding bigger feature
 
 - [x] Unify citizen counting so Advisor dialogue, crown claim validation, and `/royalcrown status` all use the same logic.
 - [x] Improve `/royalcrown status` with accepted/crowned/ceremony/crown-owner state.
+- [x] Add `/royalcrown help` with normal and debug commands.
 - [x] Add open debug commands for development and local testing:
   - accept trials;
   - complete defense requirement for current player;
@@ -217,3 +218,6 @@ Ideas:
 - Added `/royalcrown debug start_coronation` to trigger the ceremony directly once requirements are complete.
 - Added ceremony safety limits for max participants and excluded mounted/leashed/sleeping citizens.
 - Added a manual test checklist for the coronation flow.
+- Rewrote `README.md` using the same structured documentation style as Rally of the Guard.
+- Added `CURSEFORGE.md` with a public-facing project description.
+- Added `/royalcrown help` and localized help command text.
