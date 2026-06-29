@@ -42,6 +42,7 @@
   "msg.royalcrown.coronation.complete": "§6Long live the King!",
   "msg.royalcrown.coronation.not_ready": "§cThe coronation cannot proceed. The royal trials are no longer complete.",
   "msg.royalcrown.coronation.already_started": "§eThe coronation has already begun.",
+  "msg.royalcrown.coronation.skipped": "§eThe ceremony is disabled in config; the crown was granted directly.",
 
   "label.royalcrown.yes": "Yes",
   "label.royalcrown.no": "No",
@@ -56,6 +57,7 @@
   "cmd.royalcrown.debug.reset_player": "§7[Debug] Current player's royal progress reset.",
   "cmd.royalcrown.debug.clear_crown": "§7[Debug] Global crown record cleared.",
   "cmd.royalcrown.debug.give_crown": "§7[Debug] Crown given to the current player.",
+  "cmd.royalcrown.debug.start_coronation": "§7[Debug] Coronation started.",
   "cmd.royalcrown.debug.respawn_advisor": "§7[Debug] Advisor ensured near the Town Hall at §e(%s, %s, %s)§7.",
   "cmd.royalcrown.debug.respawn_advisor.no_townhall": "§7[Debug] No nearby Town Hall found.",
 

@@ -70,6 +70,17 @@ public class RoyalCommands {
                             sendStatus(p);
                             return 1;
                         }))
+                        .then(Commands.literal("start_coronation").executes(ctx -> {
+                            ServerPlayer p = ctx.getSource().getPlayerOrException();
+                            if (!RoyalTrials.canClaimCrown(p.serverLevel(), p)) {
+                                p.sendSystemMessage(Component.translatable("msg.royalcrown.coronation.not_ready"));
+                                sendStatus(p);
+                                return 0;
+                            }
+
+                            CoronationCeremony.start(p.serverLevel(), p, 0);
+                            return 1;
+                        }))
                         .then(Commands.literal("respawn_advisor").executes(ctx -> {
                             ServerPlayer p = ctx.getSource().getPlayerOrException();
                             ServerLevel sl = p.serverLevel();

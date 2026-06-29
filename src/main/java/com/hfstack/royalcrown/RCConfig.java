@@ -30,6 +30,12 @@ public class RCConfig {
         public final ForgeConfigSpec.BooleanValue UNIQUE_PER_WORLD;          // só 1 coroa por mundo?
         public final ForgeConfigSpec.BooleanValue ALLOW_RECLAIM;             // permitir reaver se perder?
 
+        public final ForgeConfigSpec.BooleanValue CORONATION_ENABLED;
+        public final ForgeConfigSpec.IntValue CORONATION_GATHER_TICKS;
+        public final ForgeConfigSpec.IntValue CORONATION_CELEBRATE_TICKS;
+        public final ForgeConfigSpec.DoubleValue CORONATION_SEARCH_RADIUS;
+        public final ForgeConfigSpec.IntValue CORONATION_MAX_PARTICIPANTS;
+        public final ForgeConfigSpec.DoubleValue CORONATION_JUMP_CHANCE;
 
         Common(ForgeConfigSpec.Builder b) {
             b.push("crown");
@@ -88,6 +94,30 @@ public class RCConfig {
             ALLOW_RECLAIM = b
                     .comment("Permite reaver a coroa se perdida (se UNIQUE_PER_WORLD==true, só o mesmo jogador).")
                     .define("trial.allowReclaim", false);
+
+            CORONATION_ENABLED = b
+                    .comment("Ativa a cerimônia de coroação antes da entrega da coroa.")
+                    .define("coronation.enabled", true);
+
+            CORONATION_GATHER_TICKS = b
+                    .comment("Duração da fase em que cidadãos são chamados para a cerimônia (ticks).")
+                    .defineInRange("coronation.gatherTicks", 220, 20, 2400);
+
+            CORONATION_CELEBRATE_TICKS = b
+                    .comment("Duração da fase de celebração da cerimônia (ticks).")
+                    .defineInRange("coronation.celebrateTicks", 220, 20, 2400);
+
+            CORONATION_SEARCH_RADIUS = b
+                    .comment("Raio para buscar cidadãos que participarão da cerimônia.")
+                    .defineInRange("coronation.searchRadius", 64.0, 8.0, 160.0);
+
+            CORONATION_MAX_PARTICIPANTS = b
+                    .comment("Número máximo de cidadãos/guardas chamados para a cerimônia.")
+                    .defineInRange("coronation.maxParticipants", 24, 1, 100);
+
+            CORONATION_JUMP_CHANCE = b
+                    .comment("Chance de cada cidadão pular em cada batida de celebração (0.0 a 1.0).")
+                    .defineInRange("coronation.jumpChance", 0.35, 0.0, 1.0);
 
             b.pop();
         }

@@ -89,7 +89,8 @@ Goal: make the existing crown journey more reliable before adding bigger feature
   - reset current player progress;
   - respawn/ensure Advisor near the Town Hall;
   - clear world crown owner;
-  - give crown to current player.
+  - give crown to current player;
+  - start coronation directly when requirements are complete.
 - Review duplicate or obsolete saved data classes for Advisor spawn state.
 - Decide whether to remove the invalid crown recipe or replace it with a cleaner intentional lock.
 
@@ -120,6 +121,26 @@ Implementation notes:
 - Use short-lived AI nudges: navigation target, look control, occasional jump.
 - Use randomized jump timing so citizens do not all jump in the same tick.
 - Ceremony should fail gracefully if few citizens can reach the area.
+- Ceremony tuning is configurable in `royalcrown-common.toml`:
+  - enabled/disabled;
+  - gather duration;
+  - celebration duration;
+  - citizen search radius;
+  - max participants;
+  - jump chance.
+
+Manual test checklist:
+
+- Confirm `/royalcrown debug respawn_advisor` finds the Town Hall and ensures the Advisor nearby.
+- Confirm `/royalcrown debug accept` marks the trials as accepted.
+- Confirm `/royalcrown debug complete_defenses` completes only the defense requirement.
+- Confirm `/royalcrown status` uses the same citizen count shown by the Advisor.
+- Once population and defenses are complete, run `/royalcrown debug start_coronation`.
+- Check whether citizens and guards walk toward the Town Hall area without teleporting.
+- Check whether citizens jumping looks happy rather than chaotic.
+- Check whether guards stand closer than regular citizens.
+- Check whether the crown is granted only at the end of the ceremony.
+- Check whether disabling `coronation.enabled` grants the crown directly.
 
 ### 3. Royal Decrees
 
@@ -192,3 +213,7 @@ Ideas:
 - Bumped `mod_version` to `1.1.0` for the next public release target.
 - Verified `./gradlew build` successfully with Java 17.
 - Added open `/royalcrown debug ...` commands for faster local testing without permission requirements.
+- Added configurable coronation settings in `royalcrown-common.toml`.
+- Added `/royalcrown debug start_coronation` to trigger the ceremony directly once requirements are complete.
+- Added ceremony safety limits for max participants and excluded mounted/leashed/sleeping citizens.
+- Added a manual test checklist for the coronation flow.

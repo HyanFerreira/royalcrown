@@ -32,16 +32,21 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = ModMain.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class CoronationCeremony {
     private static final ResourceLocation MINECOLONIES_CITIZEN = new ResourceLocation("minecolonies", "citizen");
-    private static final int GATHER_TICKS = 220;
-    private static final int CELEBRATE_TICKS = 220;
-    private static final int TOTAL_TICKS = GATHER_TICKS + CELEBRATE_TICKS;
-    private static final double SEARCH_RADIUS = 64.0D;
     private static final Map<UUID, Session> SESSIONS = new HashMap<>();
 
     private CoronationCeremony() {
     }
 
     public static void start(ServerLevel sl, ServerPlayer player, int advisorEntityId) {
+        if (!RCConfig.COMMON.CORONATION_ENABLED.get()) {
+            if (RoyalTrials.completeCoronation(sl, player)) {
+                player.sendSystemMessage(Component.translatable("msg.royalcrown.coronation.skipped"));
+            } else {
+                player.sendSystemMessage(Component.translatable("msg.royalcrown.coronation.not_ready"));
+            }
+            return;
+        }
+
         UUID playerId = player.getUUID();
         if (SESSIONS.containsKey(playerId)) {
             player.sendSystemMessage(Component.translatable("msg.royalcrown.coronation.already_started"));
@@ -77,10 +82,15 @@ public final class CoronationCeremony {
                 continue;
             }
 
+            if (!player.serverLevel().dimension().location().toString().equals(session.dimension)) {
+                done.add(session.playerId);
+                continue;
+            }
+
             session.age++;
             tickSession(sl, player, session);
 
-            if (session.age >= TOTAL_TICKS) {
+            if (session.age >= totalTicks()) {
                 finish(sl, player, session);
                 done.add(session.playerId);
             }
@@ -96,7 +106,7 @@ public final class CoronationCeremony {
             guideParticipants(sl, player, session);
         }
 
-        if (session.age == GATHER_TICKS) {
+        if (session.age == gatherTicks()) {
             sl.playSound(null, session.anchor, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1.0F, 0.9F);
             sl.sendParticles(ParticleTypes.TOTEM_OF_UNDYING,
                     player.getX(), player.getY() + 1.2D, player.getZ(),
@@ -104,11 +114,11 @@ public final class CoronationCeremony {
             player.sendSystemMessage(Component.translatable("msg.royalcrown.coronation.witness"));
         }
 
-        if (session.age > GATHER_TICKS && session.age % 10 == 0) {
+        if (session.age > gatherTicks() && session.age % 10 == 0) {
             cheerParticipants(sl, player, session);
         }
 
-        if (session.age > GATHER_TICKS && session.age % 60 == 0) {
+        if (session.age > gatherTicks() && session.age % 60 == 0) {
             sl.playSound(null, session.anchor, SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.PLAYERS, 0.9F, 1.2F);
         }
     }
@@ -131,6 +141,14 @@ public final class CoronationCeremony {
         return SESSIONS.containsKey(playerId);
     }
 
+    private static int gatherTicks() {
+        return RCConfig.COMMON.CORONATION_GATHER_TICKS.get();
+    }
+
+    private static int totalTicks() {
+        return RCConfig.COMMON.CORONATION_GATHER_TICKS.get() + RCConfig.COMMON.CORONATION_CELEBRATE_TICKS.get();
+    }
+
     private static BlockPos findCeremonyAnchor(ServerLevel sl, ServerPlayer player, int advisorEntityId) {
         BlockPos townHall = RoyalTrials.findNearestTownHall(sl, player.blockPosition(), 96);
         if (townHall != null) return townHall.above();
@@ -144,11 +162,14 @@ public final class CoronationCeremony {
     }
 
     private static List<UUID> findParticipants(ServerLevel sl, BlockPos anchor) {
-        AABB area = new AABB(anchor).inflate(SEARCH_RADIUS);
+        AABB area = new AABB(anchor).inflate(RCConfig.COMMON.CORONATION_SEARCH_RADIUS.get());
         List<Mob> citizens = sl.getEntitiesOfClass(Mob.class, area, CoronationCeremony::isMinecoloniesCitizen);
         List<UUID> ids = new ArrayList<>();
+        int max = RCConfig.COMMON.CORONATION_MAX_PARTICIPANTS.get();
         for (Mob mob : citizens) {
+            if (!canParticipate(mob)) continue;
             ids.add(mob.getUUID());
+            if (ids.size() >= max) break;
         }
         return ids;
     }
@@ -158,6 +179,7 @@ public final class CoronationCeremony {
         for (UUID id : session.participants) {
             Entity entity = sl.getEntity(id);
             if (!(entity instanceof Mob mob) || !mob.isAlive()) continue;
+            if (!canParticipate(mob)) continue;
 
             Vec3 spot = ceremonySpot(session.anchor, index++, isLikelyGuard(mob));
             mob.getNavigation().moveTo(spot.x, spot.y, spot.z, isLikelyGuard(mob) ? 0.85D : 0.75D);
@@ -169,9 +191,10 @@ public final class CoronationCeremony {
         for (UUID id : session.participants) {
             Entity entity = sl.getEntity(id);
             if (!(entity instanceof Mob mob) || !mob.isAlive()) continue;
+            if (!canParticipate(mob)) continue;
 
             mob.getLookControl().setLookAt(player, 30.0F, 30.0F);
-            if (mob.onGround() && sl.random.nextFloat() < 0.35F) {
+            if (mob.onGround() && sl.random.nextDouble() < RCConfig.COMMON.CORONATION_JUMP_CHANCE.get()) {
                 mob.getJumpControl().jump();
                 sl.sendParticles(ParticleTypes.HAPPY_VILLAGER,
                         mob.getX(), mob.getY() + mob.getBbHeight() + 0.2D, mob.getZ(),
@@ -191,6 +214,14 @@ public final class CoronationCeremony {
     private static boolean isMinecoloniesCitizen(Mob mob) {
         var key = ForgeRegistries.ENTITY_TYPES.getKey(mob.getType());
         return key != null && key.equals(MINECOLONIES_CITIZEN);
+    }
+
+    private static boolean canParticipate(Mob mob) {
+        return mob.isAlive()
+                && !mob.isPassenger()
+                && !mob.isVehicle()
+                && !mob.isSleeping()
+                && !mob.isLeashed();
     }
 
     private static boolean isLikelyGuard(Mob mob) {
